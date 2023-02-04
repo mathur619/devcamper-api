@@ -6,7 +6,9 @@ const connectDB = async () => {
     useNewUrlParser: true,
   });
 
-  console.log(`Mongoose connection established: ${conn.connection.host}`);
+  console.log(
+    `Mongoose connection established: ${conn.connection.host}`.cyan.bold
+  );
 };
 
 module.exports = connectDB;
