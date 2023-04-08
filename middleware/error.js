@@ -26,6 +26,26 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(message, 404);
   }
 
+  // Mongoose duplicate error
+  if (err.code === 11000) {
+    const message = `Duplicate field value provided`;
+    error = new ErrorResponse(message, 400);
+  }
+
+  // Mongoose validation error
+  if (err.name === "ValidationError") {
+    /*
+
+    err.errors is an array of objects with the key as the field which has error and
+    the value as the ValidationError object
+
+    [{name: ValidationError},{description: ValidationError},{address: ValidationError}]
+
+    */
+    const message = Object.values(err.errors).map((err) => err.message);
+    error = new ErrorResponse(message, 400);
+  }
+
   res.status(error.statusCode || 500).json({
     success: false,
     error: error.message || "Server Error",
